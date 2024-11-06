@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List App - Calendar</title>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="styles.css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Select a Date</h1>
+        <div id='calendar'></div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const today = moment().format('YYYY-MM-DD'); // Get today's date in the correct format
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                selectable: true,
+                selectHelper: true,
+                // Restrict date selection to today and future
+                validRange: {
+                    start: today
+                },
+                select: function(start, end) {
+                    const selectedDate = moment(start).format('YYYY-MM-DD');
+                    // Redirect to tasks page with the selected date
+                    window.location.href = `tasks.html?date=${selectedDate}`;
+                    $('#calendar').fullCalendar('unselect');
+                },
+                editable: true,
+                events: [] // You can add events here if needed
+            });
+        });
+    </script>
+</body>
+</html>
