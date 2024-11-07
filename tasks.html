@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Tasks for <span id="selectedDate"></span></h1>
-        <form id="taskForm">
+    <div class="container animate__animated animate__fadeIn">
+        <h1 class="page-title">Tasks for <span id="selectedDate"></span></h1>
+        <form id="taskForm" class="task-form">
             <input type="text" id="taskInput" placeholder="Add a new task" required />
             <button type="submit">Add Task</button>
         </form>
         <ul id="taskList"></ul>
-        <div id="celebration" class="celebration">🎉 Task Completed! 🎉</div>
-        <button id="backButton">Back to Calendar</button>
+        <div id="celebration" class="celebration animate__animated">🎉 Task Completed! 🎉</div>
+        <button id="backButton" class="back-button">Back to Calendar</button>
     </div>
 
     <script>
@@ -33,32 +34,31 @@
         function loadTasks() {
             const tasks = JSON.parse(localStorage.getItem('tasks')) || {};
             const tasksForDate = tasks[selectedDate] || [];
-            taskList.innerHTML = ''; // Clear the list before loading
+            taskList.innerHTML = '';
             tasksForDate.forEach((task, index) => {
                 addTaskToDOM(task, index);
             });
         }
 
-        // Add task to DOM
         function addTaskToDOM(task, index) {
             const li = document.createElement('li');
             li.textContent = task.task;
+            li.classList.add('task-item', 'animate__animated', 'animate__fadeInUp');
             if (task.completed) {
                 li.classList.add('completed');
             }
-            li.setAttribute('data-index', index); // Add index as a data attribute
+            li.setAttribute('data-index', index);
             li.addEventListener('click', function() {
                 if (!task.completed) {
                     markTaskAsCompleted(li, task);
                 }
             });
 
-            // Add delete button
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.classList.add('delete-button');
             deleteButton.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent triggering the task completion
+                e.stopPropagation();
                 deleteTask(index);
             });
 
@@ -66,58 +66,48 @@
             taskList.appendChild(li);
         }
 
-        // Mark task as completed
         function markTaskAsCompleted(taskElement, task) {
-            // Show a confirmation dialog
             const isConfirmed = confirm("Are you sure you want to mark this task as completed?");
-
             if (isConfirmed) {
-                // Add the line-through effect to the task
                 taskElement.classList.add('completed');
                 task.completed = true;
-
-                // Trigger the celebration animation
                 triggerCelebrationAnimation();
-
-                // Save the updated tasks
                 saveTasks();
             }
         }
 
-        // Trigger celebration animation
         function triggerCelebrationAnimation() {
             celebrationElement.style.display = 'block';
+            celebrationElement.classList.add('animate__fadeInUp');
             setTimeout(() => {
-                celebrationElement.style.display = 'none';
+                celebrationElement.classList.remove('animate__fadeInUp');
+                celebrationElement.classList.add('animate__fadeOutDown');
+                setTimeout(() => {
+                    celebrationElement.style.display = 'none';
+                    celebrationElement.classList.remove('animate__fadeOutDown');
+                }, 2000);
             }, 2000);
         }
 
-        // Save tasks to local storage
         function saveTasks() {
             const tasks = JSON.parse(localStorage.getItem('tasks')) || {};
             tasks[selectedDate] = tasks[selectedDate] || [];
-            const tasksForDate = tasks[selectedDate];
-            // Save the tasks in the localStorage with the updated task
             const taskElements = document.querySelectorAll('li');
             taskElements.forEach((li, index) => {
-                tasksForDate[index].completed = li.classList.contains('completed');
+                tasks[selectedDate][index].completed = li.classList.contains('completed');
             });
             localStorage.setItem('tasks', JSON.stringify(tasks));
-            loadTasks(); // Reload tasks to display the updated ones
+            loadTasks();
         }
 
-        // Delete task
         function deleteTask(index) {
             const tasks = JSON.parse(localStorage.getItem('tasks')) || {};
             tasks[selectedDate] = tasks[selectedDate].filter((_, i) => i !== index);
             localStorage.setItem('tasks', JSON.stringify(tasks));
-            loadTasks(); // Reload tasks after deletion
+            loadTasks();
         }
 
-        // Load tasks on page load
         loadTasks();
-
-        // Handle form submission
         taskForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const taskText = taskInput.value.trim();
@@ -126,12 +116,11 @@
                 tasks[selectedDate] = tasks[selectedDate] || [];
                 tasks[selectedDate].push({ task: taskText, completed: false });
                 localStorage.setItem('tasks', JSON.stringify(tasks));
-                taskInput.value = ''; // Clear input after saving
-                loadTasks(); // Reload tasks to display the new one
+                taskInput.value = '';
+                loadTasks();
             }
         });
 
-        // Back button functionality
         backButton.addEventListener('click', function() {
             window.location.href = 'index.html';
         });
