@@ -181,3 +181,22 @@ input[type="text"]:focus, input[type="time"]:focus {
 .fadeInUp {
     animation: fadeInUp 0.5s ease-out;
 }
+.page-title {
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.task-item {
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.task-item:hover {
+    transform: scale(1.02);
+}
+
+.back-button {
+    margin-top: 20px;
+}
