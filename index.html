@@ -6,20 +6,22 @@
     <title>To-Do List App - Calendar</title>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="styles.css">
+    <!-- Include Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Select a Date</h1>
+    <div class="container animate__animated animate__fadeIn">
+        <h1 class="page-title">Select a Date</h1>
         <div id='calendar'></div>
     </div>
 
     <script>
         $(document).ready(function() {
-            const today = moment().format('YYYY-MM-DD'); // Get today's date in the correct format
-
+            const today = moment().format('YYYY-MM-DD');
+    
             $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -28,18 +30,19 @@
                 },
                 selectable: true,
                 selectHelper: true,
-                // Restrict date selection to today and future
                 validRange: {
                     start: today
                 },
-                select: function(start, end) {
-                    const selectedDate = moment(start).format('YYYY-MM-DD');
-                    // Redirect to tasks page with the selected date
+                dayClick: function(date, jsEvent, view) {
+                    const selectedDate = moment(date).format('YYYY-MM-DD');
                     window.location.href = `tasks.html?date=${selectedDate}`;
-                    $('#calendar').fullCalendar('unselect');
                 },
                 editable: true,
-                events: [] // You can add events here if needed
+                events: [],
+                // Add animations on view render
+                viewRender: function(view, element) {
+                    element.addClass('animate__animated animate__fadeIn');
+                }
             });
         });
     </script>
